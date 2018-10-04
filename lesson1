@@ -143,4 +143,81 @@ T(n) = (n+1)*O(1) = O(n);
          T(0) = O(1)
          T(n)-n = T(n-1)-(n-1) = ... = T(0)
          T(n) = O(1) + n = O(n)
+数组倒置:
+A[0,n]
+统一接口: void reverse(int* A, int lo , int hi);
+递归版:
+    if (lo < hi){
+    swap(A[lo], A[hi]);
+    reverse(A,lo+1,hi-1);
+    }
+分而治之：
+    为求解一个大规模的问题，可以将其划分为若干子问题，规模大体相当，分别求解子问题，由子问题，
+得到原问题的解。
+数组求和：二分递归
+sum (int A[], int lo, int hi ){
+    if (lo == hi) return A[lo];
+    int mi = (lo + hi)>>1;
+    return sum(A,lo,mi) + sum(A,mi+1,hi);
+}//入口形式为 sum(A, 0, n-1)
+T(n) = O(1)*(2^0 + 2^1 +...+ 2^logn) =O(n)
+
+T(n) = 2*T(n/2) + O(1);
+T(1) = O(1);
+
+Max2 : 
+A[lo,hi） 最大两个整数A[x1] A[x2] A[x1]>=A[x2]
+迭代1
+void max2(int A[], int lo, int hi, int& x1, int& x2 ){
+     for (x1 = lo,int i = lo +1; i < hi; i++)
+         if (A[x1] < A[i]) x1 = i;   //O(hi-lo-1)
+     for (x2 = lo,int i = lo +1; i < x1; i++)
+         if (A[x2] < A[i]) x2 = i;   //O(x1-lo-1)
+     for (int i = x1 +1; i < hi; i++)
+         if (A[x2] < A[i]) x2 = i;   //O(hi-x1-1)   
+}  //O(2*hi-2*lo-3) = O(2n-3)
+迭代2
+void max2(int A[], int lo, int hi, int& x1, int& x2 ){
+     if (A[x1 = lo] < A[x2 = lo + 1]) swap(x1,x2);
+     for (int i = lo +2; i < hi; i++)
+         if (A[x2] < A[i])
+            if(A[x1] < A[x2 = i])
+              swap(x1,x2);
+}
+递归 +  分治3
+void max2(int A[], int lo, int hi, int& x1, int& x2 ){
+     if (lo + 2 == hi){
+        x1 = lo; x2 = lo+1;
+        if(A[lo] < A[lo+1])
+          swap(x1,x2);
+        return; 
+     }
+     if (lo + 3 == hi){
+          x1 = lo; x2 = lo+1;
+          if(A[lo] < A[lo+1])
+              swap(x1,x2);
+          if (A[lo+2]>A[x2])
+             if(A[x2 = lo+2]>A[x1])
+               swap (x1,x2);
+     return;
+     }
+     int mi = (lo + hi)/2;
+     int x1L, x2L; max2(A, lo, mi, x1L, x2L);
+     int x1R, x2R; max2(A, mi, hi, x1R, x2R);
+     if (A[x1L] > A[x1R]){
+        x1 = x1L; x2 = (A[x2L] > A[x1R]) ? x2L : x1R; 
+     }
+     else{
+        x1 = x1R; x2 = (A[x2R] > A[x1L]) ? x2R : x1L; 
+     }
+} //  T(n) = 2*T(n/2) +2 <= 5n/3 -2;
+-----------------------------------------------------
+动态规划
+fib():递归
+fib(n) = fib(n-1) + fib(n-2) ;{0,1,2,3,5,....}
+int fib(n){
+return (2 > n)? n : fib(n-1) + fib(n-2);
+}
+    
+    
  
