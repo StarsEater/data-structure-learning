@@ -1,0 +1,73 @@
+#2018/10/8 
+向量
+抽象数据类型 = 数据模型 + 定义在模型上的一组操作
+数据结构     = 基于某种特定语言，实现ADT一整套算法
+向量各元素与[0,n)内的秩一一对应
+typedef int Rank; //秩
+#define DEFAULT_CAPACITY 3
+template <typename T> class Vector{
+   private : Rank _size; int _capacity; T* _elem; //规模、容量、数据区
+   protected:
+       /* .. 内部函数 */
+   public :
+       /* ..构造函数 */
+       /* ..析构函数 */
+       /* ..只读接口 */
+       /* ..可读接口 */
+       /* ..可写接口 */
+       /* ..遍历接口 */
+};
+构造与析构
+Vector(int c = DEFAULT_CAPICITY){
+      _elem = new T[_capicity = c];
+      size = 0;
+}
+Vector(T const * A, Rank lo, Rank hi){//数组区间赋值
+      copyFrom(A, lo, hi);
+}
+Vector(Vector<T> const & V, Rank lo, Rank hi){//向量区间赋值
+      copyFrom(V._elem, lo, hi);
+}
+Vector(Vector<T> const& V){           //向量整体赋值
+      copyFrom(V._elem, 0, V._size);
+}
+~Vector(){
+      delete [] _elem;  //释放内部空间
+}
+基于复制的构造
+template <typename T> 
+void Vector<T> ::copyFrom(T* const A, Rank lo, Rank hi){
+    _elem = new T[_capacity = 2*(hi - lo)]; //分配空间
+    _size = 0;       //规模清零
+    while (lo < hi){  //A[lo,hi)
+        _elem[_size++] = A[lo++]; //逐一复制
+    }
+ --------------------------------------------------
+ 可扩充向量
+ 静态空间管理
+ _capacity: 总容量
+ _size : 当前的实际规模
+ 若采用静态空间管理,容量_capacity 固定,不足之处:
+  1、上溢：_elem[]不足以存放所有元素
+  2、下溢：_elem[]中的元素寥寥无几
+     装填因子 = _size / _capacity << 0.5
+ 动态空间管理:
+    在即将发生上溢,适当扩大内部数组的容量
+    
+ 扩容算法实现：   
+ template<typename T>
+ void Vector<T> ::expand(){
+     if (_size < _capicity) return; //尚未满员,不扩容
+     _capacity = max(_capacity, DEFAULT_CAPACITY); // 不低于最小容量
+     T* oldElem = _elem;
+     _elem = new T[_capacity << = 1]; //容量加倍
+     for (int i = 0; i < _size; i++){
+        _elem[i] = oldElem[i];
+     }
+     delete [] oldElem;
+ }
+ 容量递增策略
+ T* oldElem = _elem;
+ _elem = new T[_capacity + = INCREMENT];
+ 最坏情况：在初始容量0的空向量中,l
+     
