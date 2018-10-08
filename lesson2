@@ -69,5 +69,115 @@ void Vector<T> ::copyFrom(T* const A, Rank lo, Rank hi){
  容量递增策略
  T* oldElem = _elem;
  _elem = new T[_capacity + = INCREMENT];
- 最坏情况：在初始容量0的空向量中,l
-     
+ 最坏情况：在初始容量0的空向量中,连续插入n = m*I
+ 不计申请空间操作，每次扩容过程复制原向量的时间成本 ：    
+  插入第        1、2、3、4.....  m  次 
+  时间成本      0、I、2I、3I....(m-1)I
+  O(n^2) 每次扩容的分摊成本O(n)
+  
+  容量加倍策略
+  T* oldElem = _elem;
+  _elem = new T[_capacity <<= 1];
+  最坏情况：在初始容量1的空向量中,连续插入n = 2^m;
+ 不计申请空间操作，每次扩容过程复制原向量的时间成本 ：    
+  插入第        1、2、3、4..... m  次 
+  时间成本      1、2、4、8.... 2^m 
+  O(n) 每次扩容的分摊成本O(1)
+  
+  平均复杂度：
+    根据数据结构各种操作出现的概率的分布，将对应的成本加权平均（上述两种复杂度均为O(n)）
+  分摊复杂度：
+    对数据结构连续的实施足够多次操作，所需总体成本分摊至单次操作
+  -------------------------------------------------------------------------------
+  无序向量
+      元素访问：
+         template <typename T>
+         T & Vector<T>::operator[](Rank r) const{
+               return _elem[r];
+         }
+         循秩访问
+         右值：T x = V[r] + U[s]*W[t];
+         左值：V[r] = (T)(x+3);
+         (右值只读，左值可读可写) 
+      插入：
+          template <typename T>
+          Rank Vector<T>::insert(Rank r,T const & e){
+             expand(); // 若有必要，扩容
+             for (int i = _size; i > r; i--){
+               _elem[i] = _elem[i-1];
+             }
+             _elem[r] = e;
+             _size++;
+             return r;
+          }
+       区间删除：
+           template<typename T>
+           int Vector<T>::remove(Rank lo, Rank hi){
+              if (lo == hi) return 0;
+              while (hi <_size) _elem[lo++] = _elem[hi++];
+              _size = lo; 
+              shrink(); // 若有必要，缩容
+              return hi-lo;
+           }
+        查找：
+           无序向量：T为可判等的基本类型，或已重载 == 或!=
+           有序向量：T为可比较的基本类型，或已重载 < 或 >
+           template<typename T>
+           int Vector<T>::find(T const & e,Rank lo, Rank hi) const{
+               while ((lo < hi--) &&(e ! = _elem[hi]))
+                  return hi;
+           } //输入敏感
+        单元素删除：
+           template<typename T>
+           int Vector<T>::remove(Rank r){
+           T e = _elem[r];
+           remove(r,r+1);
+           return e;
+           }
+         唯一化：
+            template<typename T>
+            int Vector<T>::deduplicate(){
+                int oldSize = _size;
+                Rank i = 1;
+                while (i < _size)
+                    (find(_elem[i],0,i) < 0)?
+                        i++
+                      : remove(i);   
+            return oldSize - _size;
+            } //
+            不变性：在当前元素V[i] 的前缀V[0,i）中，各元素彼此互异
+            单调性：随着反复的while 迭代
+                   1）当前元素前缀长度非降
+                   2）当前元素后缀长度下降
+             find() + remove() ==>   O(n^2) 
+             遍历：
+               利用 函数指针 机制,只读或局部性修改  (*funP)(int) <==> func(int)
+               template<typename T>
+               void Vector<T>::traverse(void (*vist)(T&)){
+                  for (int i = 0; i < _size;i++)
+                    visit(_elem[i]);
+               }
+               //整个函数指针变量的声明格式如同函数myFun的声明处一样，
+               // 只不过——我们把myFun改成（*funP）而已，这样就有了一个
+               //能指向myFun函数的指针了。
+               //example: typedef int (*p)(int); p func;
+               利用 函数对象 机制,可全局性修改
+               (重载运算符( )实现)
+               template<typename T>
+               void Vector<T>::traverse(VST& visit){
+                  for (int i = 0; i < _size; i++)
+                       visit(_elem[i]);
+                }
+                函数对象实例：
+                   template <typename T>
+                   struct Increase{
+                      virtual void operator()(T & e){e++}
+                   };
+                   template <typename T>
+                   void increase(Vector<T> & V){
+                      V.traverse(Increase<T>());
+                   }
+  -------------------------------------------------------------------
+  有序向量：
+                  
+               
