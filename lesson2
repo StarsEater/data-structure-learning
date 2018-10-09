@@ -179,5 +179,65 @@ void Vector<T> ::copyFrom(T* const A, Rank lo, Rank hi){
                    }
   -------------------------------------------------------------------
   有序向量：
+     template<typename T>
+     int Vector<T>::disorder() const{
+         int n = 0;
+         for (int i =1; i <_size; i++)
+            n + =(_elem[i-1] > _elem[i]);
+          return n;  
+     }
+     唯一性：
+     低效版
+     template<typename T>
+     int Vector<T>::uniquify(){
+        int oldSize = _size;
+        int i = 0;
+        while (i < _size -1){
+           (_elem[i] == _elem[i+1])
+              ? remove(i+1)
+              :i++;    
+        }
+        return oldSize - _size;
+     }
+     复杂度：
+        O(n^2)
+        
+     高效版： 
+     template<typename T>
+     int Vector<T>::uniquify(){
+        Rank i = 0,j = 0;
+        while(++j < _size){
+           if(_elem[i]!=_elem[j])
+              _elem[++i] = _elem[j];
+         }
+         _size = ++i; 
+         shrink();
+         return j - i;
+     }
+     复杂度：
+        O（n）
+        
+     查找算法  
+     约定：在有序向量区间V[lo,hi) 中,确定不大于e的最后一个元素
+     (插入时查找的最后一个)
+     template<typename T>
+     Rank Vector<T>::search(T const & e, Rank lo, Rank hi){       
+     return (rand() % 2) ?
+         binSearch(_elem, e, lo, hi)
+        :fibSearch(_elem, e, lo, hi);
+     }
+     template<typename T> //减而治之
+     Rank Vector<T>::binSearch(T* A, T const & e, Rank lo, Rank hi){       
+         while (lo < hi){
+           Rank mi = (lo + hi) >> 1;
+           if (e < A[mi])
+              hi =  mi;
+           else if (A[mi] < e)
+              lo = mi + 1;
+           else
+             return mi;
+         }
+         return -1;
+     }   // O(1.5*logn)
                   
                
