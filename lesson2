@@ -239,5 +239,26 @@ void Vector<T> ::copyFrom(T* const A, Rank lo, Rank hi){
          }
          return -1;
      }   // O(1.5*logn)
-                  
+     /**满足取到不小于e的最大索引的二分算法,利用数学归纳法证明*/
+     template<typename T> void Vector<T>::binSort(T* A, T e,Rank lo, Rank hi){
+     while(lo < hi){
+        T mid = (lo+hi)>>1;
+        e<mid ? hi = mid : lo = mid+1; 
+     }
+     return --lo;
+   } 
+     /**起泡排序改进*/
+     template<typename T > void Vector<T>::bubbleSort(Rank lo,Rank hi){
+       while(lo<(hi = bubble(lo,hi)));
+     }                  
+     template <typename T> Rank Vector<T> ::bubble(Rank lo,Rank hi){
+        Rank last = lo;
+        while(++lo< hi)
+          if(_elem[lo-1] > _elem[lo]){
+             last = lo;
+             swap(_elem[lo-1],_elem[lo])
+             }
+        return last;     
+     } 
+     
                
