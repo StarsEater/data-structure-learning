@@ -93,11 +93,30 @@
         Rank r =1;
         while (trailer ! =( p = p->succ)){
           Posi(T) q = find(p->data, r, p);
-          q?
-        
-        
-      
-      
-      
+          q?remove(q) :r++;
+        }
+        return oldSize- _size;
       }
+      -----------------------------------------------
+      有序列表：
+        唯一化：
+          int List<T>::uniquify(){
+            if(_size < 2) return 0;
+            int oldSize = _size;
+            ListNodePosi(T)  p = first();
+            ListNodePosi(T) q;
+            while (trailer ! =( q = p->succ))
+               if(p->data != q->data)
+                  p = q;
+               else
+                  remove(q);
+            return oldSize - _size;      
+          }   
+          查找：
+             Posi(T) List<T> ::search(T const & e, int n, Posi(T) p) const{
+               while (0 <= n--)
+                 if ((p = p->pred)->data <=e) break;
+               return p;  
+             
+             }
       
