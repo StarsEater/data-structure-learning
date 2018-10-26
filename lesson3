@@ -1,0 +1,103 @@
+列表：
+ 操作：
+   1)静态：只读 get、search
+   2)动态：需写入 insert、remove
+ 指针或引用彼此连接，相邻节点称为前驱或后继，无前驱/后继，称为首/末
+ 循位置访问：
+   ADT接口：
+   pred(),succ(),data(),insertAsPred(e),insertAsSucc(e)
+   #define Posi(T) ListNode<T>*  ????
+   template<typename T>
+   struct ListNode{
+     T data;
+     Posi(T) pred;
+     Posi(T) succ;
+     ListNode(){}
+     ListNode(T e, Posi(T) p = NULL, Posi(T) s = NULL):data(e),pred(p),succ(s){}
+     Posi(T) insertAsPred(T const& e);
+     Posi(T) insertAsSucc(T const& e);
+   }
+   template<typename T> class List{
+     private: int _size;
+              Posi(T) header; Posi(T) trailer;
+     protected: /*..内部函数*/
+     public： /*..构造函数、析构函数、只读接口、可写接口、遍历接口*/
+   };  
+   header<->|first<---->last|<->trailer
+   /*初始化*/
+   template<typename T>
+   void List<T>::init(){
+     header = new ListNode<T>;
+     trailer = new ListNode<T>;
+     header->succ = trailer; header->pred = NULL;
+     trailer->pred = header; trailer->succ = NULL;
+     _size = 0;
+   }
+   /*秩访问*/
+   template<typename T>
+   T List<T>::operator[](Rank r) const{
+     Posi(T) p = first();
+     while (0 < r--) p = p->succ;
+     return p->data;
+   }
+   查找：
+     在节点p的n个前驱，找到=e的最后者
+     Posi(T) List<T>::find(T const &e, int n, Posi(T) p )const{
+       while(0 < n--)
+         if(e = (p = p->pred)->data) return p;
+       retrun NULL;  
+     }
+   插入：
+      Posi(T) List<T>::insertBefore(Posi(T) p , T const& e){
+      _size++;return p->insertAsPred(e);}????
+      Posi(T) ListNode<T>::insertAsPred(T cons& e){
+        Posi(T) x = new ListNode(e,pred,this);
+        pred->succ = x;
+        pred = x;
+        return x;
+      }
+      void List<T>copyNode(Posi(T) p, int n){
+        init();
+        while (n--){
+        insertAsLast(p->data);
+        p = p->succ;
+        }
+        insertAsLast(Posi(T) x)== insertBefore(Posi(T) x ->trailer)
+      }
+      /*删除p节点*/
+      T List<T>::remove(Posi(T) p){
+         T e = p->data;
+         p->pred->succ = p->succ;
+         p->succ->pred = p->pred;
+         delete p;
+         __size--;
+         return e;
+      }
+      /*析构*/
+      template <typename T> List<T>::~List(){
+       clear();
+       delete header;
+       delete trailer;
+      }
+      int List<T>::clear(){
+        int oldSize = _size;
+        while( 0 < _size)
+          remove(header->succ);
+        return oldSize;  
+      }
+      /*唯一化*/
+      template <typename T> List<T>:：deduplicate(){
+        if (_size < 2) return 0;
+        int oldSize =_ size;
+        Posi(T) p = first();
+        Rank r =1;
+        while (trailer ! =( p = p->succ)){
+          Posi(T) q = find(p->data, r, p);
+          q?
+        
+        
+      
+      
+      
+      }
+      
