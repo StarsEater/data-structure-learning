@@ -117,6 +117,47 @@
                while (0 <= n--)
                  if ((p = p->pred)->data <=e) break;
                return p;  
-             
              }
+          循秩  RAM
+          循位置  纸带
+      选择排序：
+         （苹果排序--每次取出篮子中最大的，起泡排序也是一种选择排序）
+      /*对起始位置为p的连续n个元素排序*/
+      void List<T>::selectionSort(Posi(T) p, int n){
+         Posi(T) head = p->pred;Posi(T) tail = p;
+         for (int i =0; i < n; i++)
+            tail = tail - >succ;
+         while (1 < n){
+            insertBefore(tail,remove(selectMax(head->succ,n)));
+            tail = tail ->pred; n--;
+         }
+      }   [3-14]
+      Posi(T) List<T>::selectMax(Posi(T) p int n){
+         Posi(T) max = p;
+         for (Posi(T) cur = p; 1 < n; n--){
+           if(!lt((cur = cur->succ)->data,max ->data))
+              max = cur;
+         return max;     
+         }
+      //相同元素选取最后一个元素
+      }         
+      //O(n^2)
+      选择排序：从无序中选择，直接放上，有序部分固定
+      插入排序：从无序中选择，并插入到有序中，有序部分不固定
+      有序部分颠倒
+      插入排序：（类比插扑克牌）
+      void List<T>::insertionSort(Posi(T) p, int n){
+        for (int r = 0; r < n; r ++){
+          insertAfter(search(p->data,r,p),p-.data);
+          p = p->succ;remove(p->pred);
+        }
+      }
+      L[0,r)+ L[r,n) --> L[0,r] + L(r,n)
+      对于前r+1个元素每个元素都等概率的在此时被插入前r个序列中，
+      于是，1/(r+1)*(1+2+...r) + 1= r/2 +1 
+      总体数学期望 = [0 +1 +2 +...+ (n-1)]/2 + n =O(n^2)
+      逆序对：(输入敏感)
+      将逆序对计入后面元素上
+      每个元素逆序对 = 插入排序的比较的次数
       
+         
