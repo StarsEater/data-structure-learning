@@ -1,0 +1,58 @@
+栈：
+  典型应用场景：
+    1.逆序输出：(conversion)输出次序与处理过程颠倒；递归深度和输出长度不易预知
+    2.递归嵌套：(stack permutation + parenthesis)具有自相似的问题可递归描述，但分支位置和嵌套深度不固定
+    3.延迟缓冲(evaluation)线性扫描算法模式中，在预读足够长之后，方能确定可处理的前缀
+    4.栈式计算(RPN)基于栈结构的特定计算模式
+  template <typename T> class Stack:public Vector<T>{
+    public:
+       void push(T const & e){
+         insert(size(),e);
+       }
+       T pop(){
+         return remove(size()-1);
+       }
+       T & top(){
+         return (*this)[size()-1];
+       }
+  }
+  进制转换：
+   void convert(Stack<char> & s, _int64 n, int base){
+     static char digit[]={'0','1','2','3','4','5','6','7','8',
+     '9','A','B','C','D','E','F'};
+     while (n > 0){
+       s.push(digit[n % base]);
+       n / = base;
+     }
+   }
+   main(){
+     Stack <char> s; convert(s,n,base);
+     while(!s.empty())
+       cout<<s.pop();
+   }
+   括号匹配：
+      bool paren(const char exp[], int lo ,int hi){
+        Stack <char> s;
+        for (int i = lo; i < hi; i++)
+          if('(' == exp[i]) s.push(exp[i]);
+          else if (!s.empty()) s.pop();
+          else return false;
+        return s.empty();  
+      }
+    栈混洗：
+    只允许 将A的顶元素弹出并压入S，或将S的顶元素弹出并压入B，
+    若经过一系列以上操作后，A中元素全部转入B中，B称之为A的一个栈混洗；
+       B=[.....'1'>    <'1',2,3,.....]=A
+                   |   |
+                   |'1'|
+                   -----
+       作为某个在A 中的元素‘1’，它作为第k个元素被压入B栈中
+       前面k-1个元素共有SP(k-1)种栈混洗，后面n-k个元素有SP(n-k)
+       种数,所以此种情况有SPk(n) = SP(K-1)*SP(n-k),由于k可以取从1到n,
+       所以最后求和得到SP(n) = 求和SPk(n)
+       SP(1)=1, SP(n) = catalan(n) = (2n)!/[(n+1)!(n!)];
+     甄别：
+       观察：任意三个元素能否按某相对次序出现于混洗中,与其他元素无关；
+       对于任意1 <=i < j < k <= n, [....k,....,i,...j,...>必定不是栈混洗序列
+     
+  
