@@ -54,5 +54,35 @@
      甄别：
        观察：任意三个元素能否按某相对次序出现于混洗中,与其他元素无关；
        对于任意1 <=i < j < k <= n, [....k,....,i,...j,...>必定不是栈混洗序列
-     
+       每一栈混洗，都对应与栈S的n次push与n次pop操作构成
+     中缀表达式：
+        float evaluate( char* S, char* & RPN ){
+          Stack<float> opnd;//数值栈
+          Stack<char> optr; //运算符栈
+          optr.push('\0');
+          while (!optr.empty()){
+            if(isdigit(*S))
+               readNumber(S,opnd);
+            else
+              switch(orderBetween(optr.top(),*S)){
+                case '<':
+                  optr.push(*S);S++;break;
+                case '=': //栈外运算符为）或'\0'(结束符) ‘）’已经触到‘（’，它们之间只是一个数值
+                  optr.pop();S++;break;
+                case '>':{
+                  char op = optr.pop();
+                  if ('!' == op)
+                    opnd.push(calcu(op,opnd.pop()));
+                  else {
+                    float pOpnd2 = opnd.pop(),
+                          pOpnd1 = opnd.pop();
+                    opnd.push(calcu(pOpnd1,op,pOpnd2));      
+                  }  
+                  break;
+                }
+              }
+              return opnd.opo();
+          }
+        }
+        逆波兰表达式
   
