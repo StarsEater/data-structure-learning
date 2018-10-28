@@ -62,7 +62,7 @@
           optr.push('\0');
           while (!optr.empty()){
             if(isdigit(*S))
-               readNumber(S,opnd);
+               readNumber(S,opnd);append(RPN,opnd.top());
             else
               switch(orderBetween(optr.top(),*S)){
                 case '<':
@@ -71,6 +71,7 @@
                   optr.pop();S++;break;
                 case '>':{
                   char op = optr.pop();
+                  append(RPN,op);
                   if ('!' == op)
                     opnd.push(calcu(op,opnd.pop()));
                   else {
@@ -85,4 +86,20 @@
           }
         }
         逆波兰表达式
+        infix=>RPN
+        队列：
+           只能在队尾插入（查询尾部元素）：enqueue() + rear()
+           只能在队头删除（查询头部元素）：dequeue() + front()
+        template<typename T> class Queue::public List<T>{
+          public:
+            void enqueue(T const & e){
+              insertAsLast(e);
+            }
+            T dequeue(){
+              return remove(first());
+            }
+            T & front(){
+              return first()->data;
+            }
+        }   
   
