@@ -1,0 +1,15 @@
+              Vector      List
+search        efficient   inefficient
+insert/remove inefficient efficient
+
+        二叉树：
+          树是特殊的图，节点数|V|=n 边数|E|=e
+                r
+                |
+             / | | \
+            r1 r2 r3... rd 
+            ri称作r的孩子(child)，ri之间互称兄弟(sibling),r为父亲(parent)
+            d=degree(r) 为 r的（出）度
+           边数之和等于度数之和等于顶点数-1=O(n)
+           在兄弟之间定义次序的树称为有序树。
+         
