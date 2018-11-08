@@ -47,10 +47,74 @@ insert/remove inefficient efficient
           template <typename VST> void travLevel ( VST &); //子树层次遍历
           template <typename VST> void traVPre (VST &); //子树先序遍历
           template <typename VST> void travIn( VST &); //子树中序遍历
-          template <typename VST> void travPost (VST &);//子树后续遍历
-          
-          
-          
-        
-        
+          template <typename VST> void travPost (VST &);//子树后序遍历
         }
+        
+        insertAsLC(T const & e){
+          return lchild = new BinNode(e,this);
+        }
+        insertAsRC(T const & e){
+          return rchild = new BinNode(e,this);
+        }
+        size (){
+           int s = 1;
+           if (lchild) s + = lchild ->size();
+           if (rchild) s + = rchild ->size();
+           return s;
+        }//O(n)
+        
+        BinTree
+        template <typename T> class BinTree{
+          protected:
+            int _size;
+            BinNodePosi(T) _root;
+            virtual int updateHeight (BinNodePosi(T) x); //根新节点x的高度
+            void updateHeightAbove (BinNodePosi(T) x);   //更新x及祖先的高度
+          public :
+            int size(){return _size;}
+            bool empty() const{ return !_root;}
+            BinNodePosi(T) root() const {return _root;}
+        }
+        #define stature(p){return (p)? (p)->height:-1;}
+        int BinTree<T>::updateHeight (BinNode(T) x){
+          return x->height = 1 + 
+              max(stature (x->lchild),stature(x -> rchild));   
+        }
+        void BinTree<T>::updateHeightAbove (BinNodePosi(T) x){
+          while (x){
+            updateHeight(x);
+            x = x->parent;
+          }
+        BinNodePosi(T) BinTree<T>::insertAsRC(BinNodePosi(T) x, T const & e) {
+          _size++; 
+          x->insertAsRC(e);
+          updateHeightAbove(x);
+          return x->rchild; 
+        }
+        ----------------------------------------------------------------------
+        先序遍历：
+            半线性->线性
+            V
+          L   R
+          先序 V|L|R  中序 L|V|R   后序 L|R|V  层次/广度
+          递归实现
+          template<typename T,typename VST>
+          void traverse ( BinNodePosi(T) x ,VST & visit){
+            if (!x) return;
+            visit(x->data);
+            traverse(x ->lChild,visit);
+            traverse(x ->rchild,visit);
+          }
+          迭代实现1
+          template<typename T,typename VST>
+          void travPre_I1 (BinNodePosi(T) x, VST $ visit){
+            Stack<BinNodePosi(T)> S;
+            if(x) S.push(x);
+            while (!S.pop()){
+              x = S.pop();
+              visit(x ->data);
+              if(HasRChild)
+          
+          
+          }
+          
