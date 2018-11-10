@@ -162,3 +162,54 @@ insert/remove inefficient efficient
             x = x->rChild;
            }
          }
+----------------------------------------------------------------------
+        层次遍历：
+        tempalte<typename T, typename VST>
+        void BinNode<T>::travLevel(VST &visit){
+          Queue<BinNodePosi(T)> Q;
+          Q.enqueue(this);
+          while (!Q.empty()){
+            BinNodePosi(T) x = Q.dequeue();
+            visit(x->data);
+            if(HasLChild(*x)) Q.enqueue(x->lChild);
+            if(HasRChild(*x)) Q.enqueue(x->rChild);
+          }
+        }
+        ----------------------------------------------
+        二叉树的重构：
+            [先序|后序] + 中序
+            preorder:  r L R  
+            inorder :  L r R
+            由数学归纳法，任意 n < N , 可以将序列划分为左右子树
+            若 出现空树，
+            左树空：
+                preorder: r R
+                postorder:R r         
+            右树空：
+                preorder: r L
+                postorder:L r
+             对于出度为偶数，（称为真二叉树）的二叉树节点两边要么全为空，要么全非空 
+             先序 + 后序 可以重构
+             pre : r [l...][r....]
+             post:  [...l][...r] r
+             
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
