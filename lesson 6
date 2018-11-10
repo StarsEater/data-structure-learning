@@ -1,0 +1,115 @@
+图
+G = (V; E)
+vertex: n =|V|
+edge|arc: e = |E|
+v~v adjacency 邻接
+v~e incidence 关联
+路径 <V0,V1,...Vk>
+长度 k
+简单路径：不含重复节点路径
+环路： V0 = Vk 
+有向无环路（DAG）
+经过所有的边的环路称为欧拉环路
+经过所有顶点的环路称为哈密尔顿环路
+
+邻接矩阵
+template <typename Tv, typename Te> class Graph{
+  private :
+    void reset(){
+      for (int i =0; i < n; i++){ //顶点
+       status(i) = UNDISCOVERED;
+       dTime(i)  = fTime(i) = -1;
+       parent(i) = -1;
+       priority(i) = INT_MAX;
+       for (int j =0; j < n; j++) //边
+         if (exist(i,j))
+           status(i,j) = UNDETERMINED;
+      }
+    }
+   public :/**..顶点操作、边操作、图算法*/ 
+} 
+邻接矩阵（点与点）与关联矩阵（点与边）
+
+顶点
+typedef enum{UNDISCOVERED, DISCOVERED, VISITED} VStatus;
+
+template<typename Tv> struct Vertex{ //顶点对象
+  Tv data; int inDegree,outDegree; //数据，出入度 
+  VStatus status;  //状态
+  int dTime, fTime; //时间标签
+  int parent;
+  int priority;
+  Vertex (Tv const & d):
+     data(d),inDegree(0),outDegree(0),status(UNDISCOVERED),
+     dTime(-1),fTime(-1), parent(-1),
+     priority(INT_MAX){}
+}
+边
+typedef enum{UNDETERMINED, TREE, CROSS, FORWARD, BACKWARD} EStatus;
+
+template <typename Te> struct Edge{
+  Te data;
+  int weight;
+  EStatus status;
+  Edge (Te const & d, int w):
+    data(d), weight(w), status(UNDETERMINED){}
+};
+
+template<typename Tv, typename Te> class GraphMatrix: public Graph<Tv, Te>{
+  private:
+    Vector< Vertex<Tv> > V; // 顶点集
+    Vector< Vector< Edge<Te>* > > E; //边集 ==> 邻接矩阵
+  public：
+    /** 操作接口 ： 顶点相关、边相关 ...*/
+    GraphMatrix(){
+      n = e = 0;
+    }
+    ~GraphMatrix(){
+      for (int j = 0; j < n; j++)
+        for (int k =0; k < n; k++)
+          delete E[j][k]; //清除所有动态申请的边记录
+    }
+}
+ 顶点静态操作
+  Tv & vertex(int i){ return V[i].data; }
+  int inDegree(int i) { return V[i].inDegree; }
+  int outDegree(int i) { return V[i].outDegree; }
+  Vstatus & status(int i){ return V[i].status; }
+  int & dTime (int i){ return V[i].dTime;}
+  int & fTime (int i){ return V[i].fTime;}
+  int & parent(int i){ return V[i].parent;}
+  int & priority(int i) {return V[i].priority;}
+ 枚举其所有的邻接顶点neighbour
+ int nextNbr(int i, int j) {//若已枚举至邻居j，则转向下一邻居
+  while( (-1 < j) && !exists(i, --j));
+  return j;
+  }
+ int firstNbr(int i){
+    return nextNbr(i,n);
+  } //首个邻居 
+ 边的操作
+bool exists(int i, int j){
+  return (0 <= i ) && (i < n) && (0 <= j ) && (j < n) && E[i][j] != NULL;
+} 
+Te & edge(int i, int j){
+  return E[i][j] ->data;
+}
+  边插入
+void insert (Te const& edge, int w, int j){ 插入(i,j,w)
+      if (exist(i, j)) return ;
+      E[i][j] = new Edge<Te> (edge, w);
+      e++;
+      V[i].outDegree ++;
+      V[j].inDegree ++;
+}  
+void remove(int i, int j){
+     Te eBak = edge(i, j);
+     delete E[i][j];
+     E[i][j] = NULL;
+     e--;
+     V[i].outDegree--;
+     V[j].inDegree--;
+     return eBak;
+}
+顶点插入：
+  
