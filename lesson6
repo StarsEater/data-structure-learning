@@ -34,10 +34,6 @@ template <typename Tv, typename Te> class Graph{
 typedef enum{UNDISCOVERED, DISCOVERED, VISITED} VStatus;
 
 template<typename Tv> struct 
-
-
-
-
 { //顶点对象
   Tv data; int inDegree,outDegree; //数据，出入度 
   VStatus status;  //状态
@@ -148,19 +144,76 @@ void remove(int i, int j){
     广度优先搜索：
     层次遍历
     Graph::BFS()
+    
     template <typename Tv, typename Te>
     void Graph<Tv, Te>::BFS(int v, int & clock){
       Queue<int > Q;
       status(v) = DISCOVERED;
       Q.enqueue(v);
       while( !Q.empty()){
-        int v =Q.dequeue();
+        int v = Q.dequeue();
         dTime(v) = ++clock;
         for (int u = firstNbr(v); -1 < u; u = nextNbr(v,u))
-        
+        /*..视u的状态，分别处理  ...*/
         status(v) = VISITED;
-      
       }
-    
     }
-   
+   /*..视u的状态，分别处理  ...*/
+   if (UNDISCOVERED == status(u)){
+     status(u) = DISCOVERED;
+     Q.enqueue(u);
+     status(v,u) = TREE;
+     parent(u) = v;
+     
+   }
+   else{
+     status(v, u) = CROSS;
+   }
+   status(v) = VISITED;
+----------------------------------
+template <typename Tv, typename Te>
+void Graph<Tv, Te>::bfs(int s){
+  reset();
+  int clock = 0;
+  int v = s;
+  do 
+    if( UNDISCOVERED == status(v))
+      BFS(v, clock);
+  while( s ! = (v = (++v % n)));    
+}
+//复杂度 O（n* (n + e)）==>O(n + e)
+最短路径：
+-----------------------------------
+深度优先
+template <typename Tv, typename Te>
+void Graph<Tv, Te>::DFS(int v, int & clock){
+  dTime(v) = ++ clock;
+  status(v) = DISCOVERED;
+  for (int u = firstBbr(v); -1 < u; u = nextNbr(v, u))
+  /*..视u的状态，分别处理 ..*/
+  /*..与BFS不同，含有递归 ..*/
+  status(v) = VISITED;
+  fTime(v) = ++clock;
+}
+/*..视u的状态，分别处理 ..*/
+  /*..与BFS不同，含有递归 ..*/
+  switch (status(u)){
+    case UNDISCOVERED: //u 尚未发现，意味着支撑树可在此拓展
+      status(v, u) = TREE;
+      parent(u) = v;
+      DFS(u, clock);
+      break;
+    case DISCOVERED:  //u 已被 发现但尚未访问完毕，应属被后代指向的祖先
+      status(v, u) = BACKWARD;
+      break;
+    default:  //u 已访问完毕（VISITED，有向图），则视承袭关系为前向边或跨边
+      status(v, u) =  dTime(v) < dTime(u) ? FORWARD : CROSS;
+  }
+  多可达域：
+  括号引理：
+    顶点的活动期：active[u] = (dTime[u], fTime[u])
+    内容：Parenthesis Lemma:
+      给定有向图G = (V, E)及其任一DFS森林，则
+        u是v的后代   iff active[u] 包含于 active[v] 
+        u是v的祖先   iff active[u] 包含 active[v]
+        u与v “无关”  iff active[u] 与 active[u] 不交叉
