@@ -1,0 +1,17 @@
+二叉搜索树（BST）
+
+  循关键码访问
+  数据项之间，依照各自的关键码彼此区分
+  条件：大小比较 、 等于比对
+  数据集合中的数据项统一地表示为词条entry形式
+  template <typename K, typename V> struct Entry{
+    K key; V value; //关键码、数值
+    Entry( K k = K(), V v = V()): key(k), value(v){};
+    Entry( Entry <K, V> const & e ): key(e.key), value(e.value){};
+   //比较器、判等器
+   bool operator < (Entry<K, V> const & e ){return key < e.key;}
+   bool operator > (Entry<K, V> const & e ){return key > e.key;}
+   bool operator == (Entry<K, V> const & e ){return key == e.key;}
+   bool operator != (Entry<K, V> const & e ){return key != e.key;}
+    
+  }
