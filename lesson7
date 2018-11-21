@@ -13,5 +13,85 @@
    bool operator > (Entry<K, V> const & e ){return key > e.key;}
    bool operator == (Entry<K, V> const & e ){return key == e.key;}
    bool operator != (Entry<K, V> const & e ){return key != e.key;}
-    
   }
+  有序性
+  节点 ~ 词条 ~ 关键码
+  顺序性：任意节点不小于/不大于其左/右后代
+  单调性：BST中序遍历序列，单调非降（充要条件）
+  template <typename T> class BST : public BinTree<T>{
+    public: //以virtual修饰，以便派生类重写
+        virtual BinNodePosi(T) & search( const T &);
+        virtual BinNodePosi(T) insert( const T &);
+        virtual bool remove ( const T &);
+    protected:
+        BinNodePosi(T) _hot; //命中节点的父亲
+        BinNodePosi(T) connect34( //3 + 4重构
+           BinNodePosi(T),BinNodePosi(T),BinNodePosi(T),
+           BinNodePosi(T),BinNodePosi(T),BinNodePosi(T),BinNodePosi(T));
+        
+        BinNodePosi(T) rotateAt( BinNodePosi(T) );//旋转调整 
+  }
+  template <typename T> BinNodePosi(T) &BST<T>::search( const T & e){
+     return searchIn( _root, e, _hot = NULL);
+  }
+  static BinNodePosi(T) & searchIn(
+    BinNodePosi(T) & v, //当前（子）树根
+    const T & e,        //目标关键码
+    BinNodePosi(T) & hot) //记忆热点{
+      if (!v || (e == v->data)) return v;
+      hot = v; 
+      return seachIn(((e < v->data) ? v->lChild : v->rChild), e , hot);
+    }
+    查找成功，指向关键码为e且真实存在的节点
+        失败，指向最后一次试图转向的空节点NULL
+  插入算法      
+  template <typename T> BinNodePosi(T) BST<T>::insert( const T & e){
+    BinNodePosi(T) & x = search(e);
+    if(!x){
+      x = new BinNode<T>(e, _hot);
+      _size++;
+      updateHeightAbove(x);
+    }
+    return x;
+  }
+  删除算法
+  template <typename T> bool BST<T>::remove( const T & e){
+    BinNodePosi(T) & x = search(e);
+    if(!x) return false;
+    removeAt(x, _hot);
+    _size--;
+    updateHeightAbove(_hot);
+    return true;
+  }
+  单分支
+  template <typename T> static BinNodePosi(T)
+  removeAt( BinNodePosi(T) & x, BinNodePosi(T) & hot){
+      BinNodePosi(T) w = x;  //实际被摘除的节点
+      BinNodePosi(T) succ = NULL; //实际被删除节点的接替者
+      if (! HasLChild( *x)) succ = x = x->rChild;
+      else if (! HasRChild( *x)) succ = x = x->lChild;
+      else{  /*..左右子树并存的情况*/}
+      hot = w->parent; //记录实际被删除节点的父亲
+      if (succ) succ->parent = hot; //将被删除节点的接替者与hot相连
+      release( w ->data); //释放被摘除节点
+      release( w ); 
+      return succ; //返回接替者
+    }
+   template <typename T> static BinNodePosi(T)
+    removeAt( BinNodePosi(T) & x, BinNodePosi(T) & hot){
+     
+    else{
+      w = w->succ();
+      swap( x->data, w->data);//令 *x与其后继*w互换数据
+      BinNodePosi(T) u = w->parent; //原问题即转化为，摘除非二度的节点w
+      ( u == x ? u->rChild : u ->lChild) = succ = w->rChild;
+    //若删除的节点与直接后继即为中序遍历的直接后继，可知该节点在删除的节点的右孩子
+    //反之交换过的节点只有右孩子
+    } 
+    
+    }
+  
+  
+  
+  
+    
