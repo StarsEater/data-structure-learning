@@ -93,6 +93,33 @@
   由n个节点组成的二叉树，高度不低于[logn] ,恰为logn，称作理想平衡
   高度渐近不超过O(logn)，即可称作适度平衡
   适度平衡的BST，称作平衡二叉搜索树(BBST)
-  
+  等价BST：
+    上下可变、左右不乱。
+  AVL树：
+    平衡因子 balFac(v) = height(lc(v)) - height(rc(v));
+    任意v |balFac(v)| <= 1;
+    高度为h的AVL树,至少包含S(h) = fib(h + 3) -1个节点
+    S(h) = 1 + S(h-1) + S(h-2);
+    S(h) + 1 = [ S(h-1) + 1 ] + [ S(h-2) + 1 ];
+    
+       h  n  S(h) + 1 
+       0  1  2         = fib(3)
+       1  2  3         = fib(4)
+       
+    AVL接口：
+      #define Balanced(x)  (stature((x).lChild) == stature((x).rChild))//理想平衡
+      #define BalFac(x)  (stature((x).lChild) - stature((x).rChild))//平衡因子
+      #define AvlBalanced(x) ((-2 < BalFac(x)) && (BalFac(x) < 2)) //平衡条件
+      template <typename T> class AVL: public BST<T>{
+        public :
+          BinNodePosi(T) insert( const T &);
+          bool remove( const T &);
+      }
+      插入实现：
+        template <typename T> BinNodePosi(T) AVL<T>::insert(const T & e){
+          BinNodePosi(T) & x = search(e);
+        
+        }
+
   
     
