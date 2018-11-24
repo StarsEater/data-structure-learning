@@ -5,3 +5,40 @@
    刚刚被访问地节点，极有可能很快地再次被访问
    下一将要被访问地节点，极有可能就在刚被访问过的节点的附近
    m次查找 O(mlogn)
+   逐层扩展：节点v一旦被访问，随即转移至树根
+   自下而上，逐层单旋(zig,zag)
+   最坏情况：
+     旋转次数呈周期地算术级数演变，每个周期累计omg(n^2),分摊omg(n^2)
+   构思精髓：向上追溯两层，而非一层
+   zig-zag/zag-zig
+   与AVL树双旋完全等效
+   与一层等效
+   zig-zig/zag-zag
+   折叠效果：一旦访问坏节点，对应路径地长度将随机减半
+   最坏情况不致持续发生
+   单趟伸展操作，分摊O(logn);
+   
+   算法实现：
+     template <typename T>
+     class Splay: public BST<T>{
+     protected: BinNodePosi(T) splay( BinNodePosi(T) v);//将v伸展至树根
+     public: //伸展树地查找也会引起整树的结构调整，故search()也需要重写
+     BinNodePosi(T) & search( const T & e);
+     BinNodePosi(T) & insert( const T & e);
+     bool remove( const T & e);
+     } 
+     template <typename T> BinNodePosi(T) Splay<T>::splay(BinNodePosi(T) v){
+       if (! v) return NULL;
+       BinNodePosi(T) p,g;
+       while ((p = v->parent) && (g->parent)){ //自下而上，反复双层扩展
+        BinNodePosi(T) gg = g->parent; //每轮之后，v都将以原曾祖父为父
+        if( IsLChild( *v))
+          if( IsRChild ( * p)){/*zig-zig*/ }else {/*zig-zag*/}
+        else if(IsRChild ( *p)){/*zag-zag*/}else {/*zag-zig*/}
+        if( !gg) v->parent = NULL; //若无曾祖父gg，则v 现即为树根；否则gg以v为孩子
+        else( g == gg->lc) ? attachAsLChild(gg, v) : attachAsRChild(gg, v);
+      }//双层伸展结束时，必有g==NULL，但p可能非空
+      if( p = v->parent){/* 若p果真是根，只需在额外单旋（至多一次）*/}
+      v->parent = NULL;return v;//伸展完成，v抵达树根
+     }
+   
