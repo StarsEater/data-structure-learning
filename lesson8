@@ -30,7 +30,7 @@
      template <typename T> BinNodePosi(T) Splay<T>::splay(BinNodePosi(T) v){
        if (! v) return NULL;
        BinNodePosi(T) p,g;
-       while ((p = v->parent) && (g->parent)){ //自下而上，反复双层扩展
+       while ((p = v->parent) && (g = p->parent)){ //自下而上，反复双层扩展
         BinNodePosi(T) gg = g->parent; //每轮之后，v都将以原曾祖父为父
         if( IsLChild( *v))
           if( IsRChild ( * p)){/*zig-zig*/ }else {/*zig-zag*/}
@@ -41,4 +41,47 @@
       if( p = v->parent){/* 若p果真是根，只需在额外单旋（至多一次）*/}
       v->parent = NULL;return v;//伸展完成，v抵达树根
      }
+    if (IslChild(* v))
+      if (IsLChild( *p)){ //zig-zig
+        attachAsLChild( g, p->rc);
+        attachAsLChild( p, v->rc);
+        attachAsRChild( p, g );
+        attachAsRChild( v, p);
+      }
+      else{ /*zig-zag*/}
+      else 
+        if (IsRChild( *p)){/* zag-zig*/}
+        else{ /*zag-zig*/}
+     
+     查找算法 非静态操作
+     template <typename T> BinNodePosi(T) Splay<T>::search(const T & e){
+     BinNodePosi(T) p = searchIn( _root, e, _hot = NULL);
+     //无论成功与否，最后被访问的节点都将伸展至根
+     _root = splay( p ? p : _hot);
+     return _root;
+     }
+     插入算法
+     删除算法
+     
+     局部性强，缓存命中率极高(即k << n << m)
+     k 经常访问的数据范围  n 总数据范围 m访问
+     效率甚至更高 --自适应的o(logk)
+     任何连续的m次查找，都可在o(mlogk + nlogn)时间内完成
+     --------------------------------------------------
+     B-树
+     严格意义非BST
+     高速缓存
+     1、内存与硬盘读写速度 10^5
+     2、硬盘读写1B 与 1kB 几乎相同耗时
+     
+     平衡的多路搜索树
+     二叉搜索树
+      经适当合并，得超级节点
+       每2代合并：4路
+       每3代合并：8路
+       每d代合并：m = 2^d路，m-1个关键码
+       多级存储系统中使用B-树，可针对外部查找，大大减少I/O次数
+       B-树利用对外存批量访问的高效性，每下降一层，都以超级节点为单位，读入一组关键码
+       m阶B-树，ml路平衡搜索树(m >= 2)
+       
    
