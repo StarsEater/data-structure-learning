@@ -82,6 +82,62 @@
        每d代合并：m = 2^d路，m-1个关键码
        多级存储系统中使用B-树，可针对外部查找，大大减少I/O次数
        B-树利用对外存批量访问的高效性，每下降一层，都以超级节点为单位，读入一组关键码
-       m阶B-树，ml路平衡搜索树(m >= 2)
+       m阶B-树，m路平衡搜索树(m >= 2)
+       外部节点和所有叶节点的深度统一相等（B树高度相对外节点）
+       内部节点
+         不超过m-1个关键码 k1,k2,k3,...kn
+         不超过m个分支     A0,A1,A3,...An+1
+       内部节点的分支数n+1也不能太少
+         树根 :2 <= n + 1
+         其余 ：上取整[m/2] <= n+1
+       也称作([m/2],m)-树
        
+       定义与实现
+       BTNode节点定义
+       template <typenname T> struct BTNode{
+         BTNodePosi(T) parent; //父
+         Vector<T> key; //数值向量
+         Vector< BTNodePosi(T) > child;//孩子向量（其长度总比key多一）
+         BTNode(){parent = NULL; child.insert(0, NULL);}
+         BTNode(T e, BTNodePosi(T) lc = NULL, BTNodePosi(T) rc =NULL){
+           parent = NULL;
+           key.insert( 0 , e);
+           child.insert( 0, lc);
+           child.insert( 1, rc);
+           if( lc) lc->parent = this;
+           if (rc) rc->parent = this;
+         }
+       }
+       BTree定义
+       #define BTNodePosi(T) BTNode<T>*
+       template <typename T> class BTree{
+         protected:
+           int _size; int _order;BTNodePosi(T) _root;
+           //关键码总数、阶次、根
+           BTNodePosi(T) _hot;//search()最后访问的非空节点
+           void solveOverflow ( BTNodePosi(T));//因插入而上溢后的分裂处理
+           void solveUnderflow ( BTNodePosi(T));//因删除而下溢后的合并处理
+         public:
+           BTNodePosi(T) search( const T & e);
+           bool insert( const T & e );
+           bool remove( const T & e );
+       };
+       查找：
+        template <typename T> BTNodePosi(T)::search( const T & e)
+        BTNodePosi(T) v = _root;  //从根节点出发
+        _hot = NULL;
+        while (v){
+          Rank r = v->key.search(e);//从从当前节点对应的向量中顺序查找
+          if ( 0 <= r && e == v->key[r]) return v;
+          _hot = v; v = v->child[r + 1]; //沿引用转至对应的下层子树，并载入其根I/O
+        } //因!v而退出，则意味着抵达外部节点   
+        return NULL; //失败
+        }
+        最大树高
+        
+        
+        
+        
+        
+        最小树高
    
