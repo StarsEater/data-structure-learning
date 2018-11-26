@@ -84,12 +84,12 @@
        B-树利用对外存批量访问的高效性，每下降一层，都以超级节点为单位，读入一组关键码
        m阶B-树，m路平衡搜索树(m >= 2)
        外部节点和所有叶节点的深度统一相等（B树高度相对外节点）
-       内部节点
+       内部节点（m为阶次）
          不超过m-1个关键码 k1,k2,k3,...kn
          不超过m个分支     A0,A1,A3,...An+1
        内部节点的分支数n+1也不能太少
          树根 :2 <= n + 1
-         其余 ：上取整[m/2] <= n+1
+         其余 ：上取整[m/2] <= n + 1
        也称作([m/2],m)-树
        
        定义与实现
@@ -134,10 +134,52 @@
         return NULL; //失败
         }
         最大树高
-        
-        
-        
-        
-        
+         含N个关键码的m阶B-树，          
+         为此各层节点依次为 n0=1,n1=2,n2=2*[m/2]..
+         nk = 2*[m/2]^(k-1)
+        考察外部节点所在层  (注：[]上取整，{}下取整)
+        //N种成功查找，N+1种失败查找
+        N+1 = nh >= 2 *([m/2])^(h-1);
+        h <= 1 + log[m/2]{(N+1)/2} = O(logmN)
+        相对于BBST
+        log[m/2]{(N+1)/2}/logN = 1/(log[m]-1)
         最小树高
-   
+        n0 = 1,n1= m,....,mh-1=m^(h-1)
+        N+1 = nh <= m^h
+        h>=logm(N+1)=omg(logmN)
+        相对于BBST
+        logm(N+1) / logN = 1/log2m
+        
+        插入实现
+        template<typename T>
+        bool BTree<T>::insert( const T & e){
+          BTNodePosi(T) v = search(e);
+          if (v) return false;
+          Rank r = _hot->key.search(e);
+          _hot->key.insert(r+1, e);
+          _hot->child.insert(r+2, NULL);
+          _size++;solveOverflow( _hot);//若发生上溢，需做分裂
+          return true; 
+        }
+        中位数A[0,n) A[下取整(n/2)] A[0,5)->A[2] A[0,6)->A[3]
+        设上溢节点中的关键码k0,k1,..km-1
+        取中位数s = 下取整(m/2)，以关键码ks为界划分
+        k0,k1,k2,...ks-1,   ks,   ks+1,....km-1
+        关键码ks上升一层,并
+        分裂split:以所得的两个节点为左右孩子
+        
+        删除
+        template<typename T>
+        bool BTree<T>::remove( const T & e){
+          BTNodePosi(T) v = search(e);
+          if (!v) return false; 
+          Rank r = v->key.search(e);
+          if (v->child[0]){//若v非叶子，则在右子树中一直向左
+             BTNodePosi(T) u = v->child[r + 1];//找到e的后继（必属于某叶子节点）
+             while ( u->child[0]) u = u->child[0];//并与之交换
+             v->key[r] = u->key[0]; v= u; r = 0;
+          } //至此，v必然位于最底层,且其中第r个关键码就是待删除者
+         v->key.remove(r); v->child.remove(r+1);_size--;
+         solveUnderflow(v);return true;
+        }
+        
