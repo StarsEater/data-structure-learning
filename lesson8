@@ -182,4 +182,32 @@
          v->key.remove(r); v->child.remove(r+1);_size--;
          solveUnderflow(v);return true;
         }
-        
+        -------------------------------------------
+        红黑树
+        持久性：保存历史版本
+        AVL 插入O(1)，删除O(logn)
+        定义：
+           由红、黑两类节点组成的BST
+           （统一增设外部节点NULL，使之成为真二叉树）
+           1、树根：必为黑色
+           2、外部节点：均为黑色
+           3、其余节点：若为红，则只能有黑孩子
+           4、外部节点到根：途中黑节点数目相等//黑深度
+        保存差异-》任何一次动态操作引发的结构变化两不致超过O(1)
+        提升变换
+        提升各红节点，使之与其（黑）父亲等高--于是每棵红黑树都对应于(2,4)-树
+        将黑节点与其红孩子视作(关键码并合并为)超级节点
+        无非四种组合，分别对应于4阶B-树的一类内部节点
+        template<typename T>class RedBlack :public BST<T>{
+          public : //BST::search()等其余接口可直接沿用
+              BinNodePosi(T) insert( const T & e);
+              bool remove( const T & e);
+          protected : void solveDoubleRed( BinNodePosi(T) x); //双红修正
+                      void solveDoubleBlack( BinNodePosi(T) x);//双黑修正
+                      int updateHeight( BinNodePosi(T) x); //更新节点黑高度
+        };
+        template <typename T> int RedBlack<T>::updateHeight( BinNodePosi(T) x){
+          x->height = max (stature (x->lc), stature (x->rc));
+          if (IsBlack(x)) x->height++;
+          return x->height;
+        }
