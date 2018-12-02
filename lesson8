@@ -211,3 +211,48 @@
           if (IsBlack(x)) x->height++;
           return x->height;
         }
+       插入算法：
+        rb-tree  <-- B-tree
+       双红缺陷
+           g ~ p ~ x
+       x的祖父 g = p->parent
+       p的兄弟 u = (p==g->lc)?g->rc:g->lc;
+       对u的颜色分两种情况处理
+       template <typename  T> BinNodePosi(T) RedBlack::insert( const T &){
+          //确认目标节点不存在(留意对_hot的设置)
+          BinNodePosi(T) & x = search(e);
+          if(x) return x;
+          //创建红节点x，以_hot为父，黑高度-1
+          x = new BinNode<T> (e, _hot, NULL, NULL, -1);
+          _size++;
+          //如有必要，需双红修正
+          solveDoubleRed(x);
+          return x? x : _hot->parent;
+       }//无论原树是否存在e，返回时总有x->data == e
+    RR1: u->color == B
+       1 参照AVL树算法，做局部3+4重构
+         将节点x,p,g及其四棵子树，按中序组合为：
+         Ta < a < T1 < b < T2 < c < T3
+       2 染色： b转黑，a或c转红
+       从B-树角度：
+        1 调整前之所以非法，因为
+           在某个三叉节点中插入红关键码，使得原黑关键码不再居中 RRB,BRR
+        2 调整之后效果相当于
+           在新的四叉节点中，三个关键码的颜色改为RBR，B-树的拓扑结构不变
+    RR2: u->color == R
+        在B-树中超级节点发生上溢
+        p与u转黑，g转红
+        在B-树，等效于节点分裂，关键码g上升一层
+     复杂度
+       重构、染色均属于常数时间
+       O(logn)的节点染色，一次“3+4”重构
+       
+       删除算法
+       B-树的下溢缺陷
+       在新树中，考察
+         r的父亲 p = r->parent
+         r的兄弟 s = (r == p->lc)?p->rc:p->lc;
+       BB-1:s为黑，且至少有一个红孩子t
+            3+4重构：t,s,p 重命名为a,b,c
+            r保持黑；a和c染黑；b继承p的颜色
+            
