@@ -82,3 +82,19 @@ template <typename T> PQ_ComplHeap<T>::heapify( Rank n){
    for ( int i = LastInternal(n); i >=0; i --)
      percolateDown(n,i);
  }
+ 堆排序算法
+  1 初始化：heapify(),O(n)，建堆
+  2 迭代： delMax(),O(logn),取出堆顶并调整复原
+  template <typename T>
+  void Vector<T>::heapSort( Rank lo, Rank hi){
+    PQ_ComplHeap<T> H( _elem + lo, hi - lo);
+    while(! H.empty())
+      _elem[--hi] = H.delMax();
+  }
+左式堆
+堆合并
+H = merge(A,B):将堆A和B合二为一 //不妨设|A| = n >= m = |B|
+方法一： A.insert(B.delMax())
+O(m * (logm + log(n + m))) = O(mlog(n+m))
+方法二：union(A,B).heapify( n + m)
+O( m + n)
