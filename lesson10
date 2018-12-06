@@ -24,7 +24,7 @@ template <typename T> struct PQ{
  template <typename T> class PQ_ComplHeap:public PQ<T>, public Vector<T>{
    protected : Rank percolateDown( Rank n, Rank i);//下滤
                Rank percolateUp (Rank i ); //上滤
-               void heapify( Rank n); //Floydj建模算法
+               void heapify( Rank n); //Floyd建模算法
    public    : PQ_ComplHeap( T * A, Rank n)//p批量构造{
                   copyFrom( A, 0, n);
                   heapify(n);
@@ -32,7 +32,53 @@ template <typename T> struct PQ{
                void insert(T);
                T getMax(){return _elem[0];}
                T delMax(); 
- }       
+ }      
+ 数值上，只要 0 < i，必满足H[i] <= H[Parent(i)]
  
- 
-
+ template <typename T> PQ_ComplHeap<T>::getMax(){
+   return _elem[0];
+ }
+ 插入及上滤
+ template <typename T> PQ_ComplHeap<T>::insert( T e){
+   Vector<T>::insert(e);
+   percolateUp(_size -1);
+ }
+ template <typename T> PQ_ComplHeap<T>::percolateUp( Rank i){
+   while ( ParentValid(i)){
+     Rank j = Parent(i);
+     if( lt( _elem[i],_elem[j])) break;
+     swap (_elem[i], _elem[j]);
+     i = j;
+   }
+   return i;
+ }
+ 删除和下滤
+  template <typename T> PQ_ComplHeap<T>::delMax(){
+   T maxElem = _elem[0];
+   _elem[0] = _elem[ --_size];
+   percolateDown(_size,0);
+   return maxElem;
+ }
+ template <typename T> PQ_ComplHeap<T>::percolateDown( Rank i){
+   Rank j;
+   while ( i!= ( j = ProperParent ( _elem, n, i))){
+     swap (_elem[i], _elem[j]);
+     i = j;
+   }
+   return i;
+ }
+ 批量建堆
+ PQ_ComplHeap( T * A, Rank n){
+   copyFrom( A, 0, n);
+   heapify(n);
+ }
+ version 1(自上而下的上滤)
+ template <typename T> PQ_ComplHeap<T>::heapify( Rank n){
+   for ( int i = 1; i < n; i ++)
+     percolateUp(i);
+ }
+ version 2(自下而上的下滤)
+template <typename T> PQ_ComplHeap<T>::heapify( Rank n){
+   for ( int i = LastInternal(n); i >=0; i --)
+     percolateDown(n,i);
+ }
