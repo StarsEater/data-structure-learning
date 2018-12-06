@@ -120,4 +120,38 @@ O( m + n)
      存在一颗以r为根、高度为d的满子树
    右侧链长为d的左式堆，至少包含 2^d-1 个内部节点，2^(d+1) - 1 个节点
    反之，在包含n个节点的左式堆中，右侧链的长度 d <= 下取整(log(n+1))-1 = O(logn)
-   
+   template< typename T> 
+   class PQ_LeftHeap: public PQ<T>, public BinTree<T>{
+      public:
+        void insert(T);
+        T getMax(){ return _root->data;}
+        T delMax();
+   }
+  static BinNodePosi(T) merge( BinNodePosi(T) a, BinNodePosi(T) b){
+    if( ! a) return b; //递归基
+    if( ! b) return a; //递归基
+    if( !lt( a->data, b->data) ) swap( b, a);//确保b不大
+    a->rc = merge( a->rc, b);//将a的右子堆与b合并
+    a->rc->parent = a;  //更新父子关系
+    if ( ! a->lc || a->lc->npl < a->rc->npl)
+      swap ( a->lc, a->rc); //确保左子堆
+    a->npl = a->rc? a->rc->npl + 1 : 1;
+    return a;
+  };
+  插入删除
+  void PQ_LeftHeap<T>::insert( T e){
+    BinNodePosi(T) v = new BinNode<T> (e);
+    _root = merge( _root,v);
+    _root->parent = NULL;
+    _size ++;
+  }
+  void PQ_LeftHeap<T>::delMax(){
+   BinNodePosi(T) lHeap = _root->lc;
+   BinNodePosi(T) rHeap = _root->rc;
+   T e = _root->data;
+   delete _root;
+   _size--;
+   _root = merge(lHeap, rHeap);
+   if( _root) _root->parent = NULL;
+   return e;
+  }
