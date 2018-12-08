@@ -1,0 +1,21 @@
+排序：
+  快速排序
+  将序列分为子序列： S= SL + SR
+  规模缩小：max { |SL|,|SR|} < n
+  彼此独立 ： max(SL) <= min(SR)
+  递归实现
+  平凡解：只剩下单个元素本身就是解
+  轴点(pivot): 左/右侧的元素，均不比他更大/小
+  以轴点为界，原序列划分自然实现
+   [lo,hi) = [lo,mi) + [mi] + (mi,hi)
+   template <typename T> void Vector<T> ::quickSort( Rank lo, Rank hi){
+    if ( hi - lo < 2) return ;
+    Rank mi = partition( lo, hi-1);//先构造轴点，再前缀排序，后缀排序
+    quickSort(lo, mi); 
+    quickSort(mi + 1, hi);
+   }
+   原始序列中，轴点未必存在;
+   必要条件：轴点必定已然就位
+   特别的，在有序序列中，所有元素皆为轴点，反之亦然
+   快速排序就是将所有元素逐个转换为轴点的过程，通过适当交换，可使任意元素变为轴点
+   L <= pivot <= G; U =[lo, hi]中，[lo]和[hi]交替空闲
