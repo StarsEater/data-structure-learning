@@ -73,8 +73,6 @@ int *build( char *P){
       t = N[t];
   return N;
   失败情况：
-  --------------------
-  BM算法：坏字符
 }
 KMP复杂度分摊分析：
  令 k = 2 * i -j
@@ -84,3 +82,34 @@ KMP复杂度分摊分析：
 再改进
   T =  0 0 0 1 0 0 0 0 1
   P =  0 0 0 0 1 
+  --------------------
+  BM算法：坏字符
+  某趟扫描中，一旦发现T[i+j] = X != Y =P[j],则P相应的右移
+  位移量取决于失配位置j，以及X在P中的秩
+  令bc[X] = rank[X] = j - shift
+  构造bc[]
+  int * buildBC( char * P){
+    int *bc = new int[256];
+    for ( size_t j = 0; j <256; j++)
+      bc[j] = -1;
+    for ( size_t m = strlen(P), j = 0; j < m; j++)
+      bc[P[j]] = j ; 刷新P[j]的出现位置记录(画家算法：后来覆盖以往的)
+    return bc;  
+  }
+  复杂度：
+    最好O(n/m)
+    最坏O(n*m)
+ ------------------------------------
+ BM_GS：
+   P[j-1] = (P[j] == P[next[k]])?
+                   (P[j-1] != P[k-1]? k-1:next[k-1])
+                  : k = next[k];
+   MS[j]:P[0,j]的所有后缀中，与P的某一后缀匹配的最长者
+   ss[j] = |MS[j]| = max{ 0 <= s <= j+1 | P(j-s,j] = P[m-s,m)}
+   ss[] ->gs[]
+   若ss[j] = j + 1,则对于任一字符P[i] (i < m-j-1) m-j-1必是gs[i]的一个候选
+   若ss[j] <= j,则 对于任一字符P[m-ss[j]-1] m-j-1必是gs[m-ss[j]-1]的一个候选
+  -----------------------------------
+  Karp-Rabin 算法
+  散列：
+    冲突
