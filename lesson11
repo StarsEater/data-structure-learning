@@ -62,3 +62,25 @@ P[0,j) x P(j,m)
 next[j+1] <= next[j] + 1 (P[j] == P[next[j]] 时取等) 
 next[j+1] = 1 + next[j] / 1 + next[next[j]] / ......
 序列严格递减，且必收敛于 1+next[0] = 0;
+int *build( char *P){
+  size_t m =strlen(P),j = 0;
+  int * N = new int[m];
+  int t = N[0] = -1;
+  while ( j < m-1 )
+    if ( 0 > t || P[j] == P[t])
+      N[ ++j] = ++t; -->[ j++;t++; N[j] = (P[j]!=P[t]?t:N[t]);]
+    else
+      t = N[t];
+  return N;
+  失败情况：
+  --------------------
+  BM算法：坏字符
+}
+KMP复杂度分摊分析：
+ 令 k = 2 * i -j
+    while ( j < m && i < n )//k单调递增，算法结束 k = 2*i - j <=2*(n-1) -(-1) = O(n)
+     if ( 0 > j || T[i] == P[j]){ i++; j++; } // k + 1
+     else  j = next[j]; // k + (>=1)
+再改进
+  T =  0 0 0 1 0 0 0 0 1
+  P =  0 0 0 0 1 
