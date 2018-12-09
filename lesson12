@@ -19,3 +19,36 @@
    特别的，在有序序列中，所有元素皆为轴点，反之亦然
    快速排序就是将所有元素逐个转换为轴点的过程，通过适当交换，可使任意元素变为轴点
    L <= pivot <= G; U =[lo, hi]中，[lo]和[hi]交替空闲
+   while( lo < hi && pivot <= _elem[hi]) hi--;
+   _elem[lo] = _elem[hi];
+     while( lo < hi && pivot >= _elem[lo]) lo++;
+   _elem[hi] = _elem[lo];
+   性能分析：
+     unstable: lo/hi的移动方向相反，左/右侧大/小重复元素可能前/后颠倒
+     in-place：只需要O(1)的附加空间
+   最好：每次划分(接近)平均，轴点总是(接近)中央
+   T( n ) = 2*T((n-1)/2) + O(n) = O(nlogn)
+   最坏：每次划分都极不均匀
+   T( n ) = T(n-1) + T(0) + T(n) = O(n^2)
+   平均:
+     以均匀独立分布为例
+     T(n) = n + 1 + 1/n {求和( k ~ [0,n-1])[T(k) + T(n-k-1)]} 
+   变种:
+    四部分 S=[lo] + L(lo,mi] + G(mi,k) + U(k,hi)
+    L< pivot <=G
+    [k] 不小于轴点 ? 直接G拓展 ： G滚动后移，L拓展
+    pivot <= S[k] ? k++ : swap( S[++mi], S[k++])
+    lo... L... mi....G.....k....U....hi
+    template < typename T> Rank Vector<T> ::partition(Rank lo, Rank hi){[lo,hi]
+      swap( _elem[lo], _elem[lo + rand() % (hi - lo + 1)])
+      T pivot = _elem[lo]; int mi = lo;
+      for ( int k = lo + 1; k <= hi; k++ )//自左向右考察每个[k]
+        if ( _elem[k] < pivot )      //若[k]小于轴点，则将其与[mi]交换，
+          swap ( _elem[ ++mi], _elem[k]);//L向右扩展
+      swap( _elem[lo], _elem[mi]); //候选轴点归位
+      return mi; 返回轴点的秩
+    }
+    
+    选取：众数
+    k-selection ：在 任意一组可比较大小的元素中，如何由小到大，找到次序为k
+    者，即在这组元素的非降序列S中，找出S[k]
