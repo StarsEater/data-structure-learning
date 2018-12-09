@@ -58,4 +58,70 @@
     template <typename T> bool majority( Vector <T> A, T & maj){
       return majEleCheck( A, maj = median( A ));
     }
-    
+    若在向量A的前缀P( |P|为偶数)中，元素x出现的次数恰占半数，
+    则A有众数仅当，对应的后缀A-P有众数m，且m就是A的众数
+    ........A......
+    ..P...A-P......
+    设A的众数为m，
+      若 x = m ，则在排除前缀P，m与其他元素在数量上的差距保持不变
+      若 x != m,则在排除前缀P之后，m与其他元素在数量上的差距不致缩小
+    template < typename T> T majEleCandidate( Vector <T> A){
+      T maj;//众数候选者
+      //线性扫描:借助计数器c，记录maj与其他元素的差额
+      for ( int c = 0, i = 0; i < A.size(); i++)
+        if ( 0 == c){//每当c归零，意味着此时前缀P可以剪除
+           maj = A[i]; c = 1; 
+        }
+        else 
+          maj == A[i]? c++ : c--;
+     return maj;  
+     }
+     template < typename T> void quickSelect( Vector<T> &  A, Rank k){
+       for (Rank lo = 0, hi = A.size() -1; lo < hi){
+         Rank i = lo, j = hi;
+         T pivot = A[lo];
+         while ( i < j ){
+           while ( i < j && pivot < = A[j]) j--;A[i] = A[j];
+           while ( i < j && A[j]  <= pivot) i++;A[j] = A[i];
+         }
+         A[i] = pivot;
+         if ( k < = i) hi = i - 1;
+         if ( i < = k) lo = i + 1;
+       }
+     }
+     LinearSelect()
+     Let Q be a small constant
+     0. if ( n = |A| < Q) return trivialSelect( A, k);  ///0. O(QlogQ)
+     1. else divide A evenly into  n/Q subsequences ( each of size Q)// 1.O(n)
+     2. sort each subsequence and determine n/Q medians//2. O(n)=O(QlogQ) * n/Q
+     3. Call linearSelect to find M, median of medians //3. T(n/Q)
+     4. Let L/E/G = { x < / = / > M | x 属于 A } // 4. O(n)
+     if ( k <= |L|) return linearSelect( L, k)   // 5. T(3/4*n)
+     if ( k <= |L| + |E|) return M
+     return linearSelect( G, k -|L| -|E| )
+   复杂度
+    在某种意义上，如上所确定的M必然不偏不倚，至少各有n/4个元素，不小于/不大于M
+    n/Q个中位数中，至少半数不小于M，而他们又各自不大于至少Q/2个元素
+     n/Q /2 * Q/2 = n/4
+     
+    T(n) = O(n) + T(n/Q) + T(3/4*n) 
+    n/Q + 3/4*n < n
+    ----------------------------------------
+    希尔排序： Shell序列
+    将整个序列视作一个矩阵，逐列各自排序 w-sorting
+    递减增量
+      由粗到细：重排矩阵，使其更窄，再逐列排序 w-ordered
+      逐步求精: 如此往复，直至矩阵变为一列 1-sorting
+      步长序列：由各矩阵宽度构成的逆序列
+      H = { w1 = 1, w2, w3, w4, w5, .. wk,....}
+      k 行 i 列
+      a[ i + k w] (0<= k < n/w)
+      选择排序输入敏感的特性
+      f = mg + nh  g、h --m、n
+      N(g,h) = { }
+      x(g,h) = max( N(g,h)) = (g-1)(h-1) -1
+      h-ordered : 任何h,S[i] < S[i+h]
+      A 1-ordered sequence is sorted
+      A g-ordered sequence remains g-ordered after being h-sorted
+      g-ordered h-ordered --> (g+h)-ordered (mg + nh)-ordered
+      (g-1)(h-1)-unordered 为逆序对范围，不断缩小逆序对的总数
