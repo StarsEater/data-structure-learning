@@ -51,4 +51,11 @@
     
     选取：众数
     k-selection ：在 任意一组可比较大小的元素中，如何由小到大，找到次序为k
-    者，即在这组元素的非降序列S中，找出S[k]
+    者，即在这组元素的非降序列S中，找出S[k],S[下取整(n/2)]
+    众数:无序向量中，若有一半以上的元素同为m，则称为众数
+    众数是中位数
+    中位数验证是否是众数
+    template <typename T> bool majority( Vector <T> A, T & maj){
+      return majEleCheck( A, maj = median( A ));
+    }
+    
