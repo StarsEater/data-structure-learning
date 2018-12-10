@@ -1,0 +1,80 @@
+Paths - digraph G=(V,E)
+      - p = V1->V2->...->Vk
+      - w(p) = sum[w(Vi-Vi-1)]
+shortest path from u to v is a path of mininum weight from u to v
+defined as  D(u,v) = min{w(p):path from u to v }
+Negative edge weights cycle -> shortest paths not exist
+
+dynamic programming 
+  optimal substructure
+  1.a subpath of a shortest path is a shortest path
+  Proof: Cut & paste
+  2.trangle inequality:
+    for all vertices u,v,x in V,D(u,v) <= D(u,x) + D(x,v)
+Single-source shortest paths from given source vertex s in V
+ find shortest path  D(s,v) for all v in V
+Assume w(u,v) >= 0
+Idea : greedy
+  1. maintain set S of vertices whose shortest-path distance form s (in S)
+  2. at each step add to S the vertice in V-S whose distance is minimum
+  3. update distance estimates of vertice adjacent to v
+Dijkstras algorithm
+a.init:
+  d[s] <- | |
+  for each v in V-{s}
+  do d[v]<- infinite 
+  S<- nothing
+  Q<- V  (priority queue)
+next,
+  while Q has thing
+    do u<- Extract-Min(Q)
+  S <- S U {u}  for each v in Adj[u]
+    if d[v] > d[u] + weight(u,v)
+     then d[v] <- d[u] + weight(u,v) -- relaxation step
+  shortest-path tree for each vertice last edge (u,v) relaxed
+  -------------------------------
+  Correctness 1
+  INVARIANT d[v]>= D(s,v) for all v in V holds after initialization
+  & any sequence of relaxation
+  Proof: 
+     Initiality:d[s] = 0 & d[v] = 0   d[s]>= D(s,s) = 0 & D(s,v)<=infinity
+     Suppose for contradication that invariant is violated
+     Consider first violation d[v] < D(s,v) caused by relaxation
+       caused by relaxation d[v] <- d[u] + w(u,v)< D(s,v)
+     d[v] = d[u] + w(u,v) >= D(s,u) + w(u,v) >= D(s,v) + D(v,u) >= D(s,v)
+  --------------------------------
+  Correctness lemma
+  Suppose s->....->u->v is a shortest path
+  if d[u] = D(s,u) relax edge (u,v) then d[v] = D(s,v)
+  Proof :
+     D(s,v) = (s->.. ->u) + w(u,v) = D(s,u) + w(u,v)
+  Correctness 1 => d[v] >= D(s,v)
+     d[v] = D(s,v)  before relaxation => done 
+     d[v] > D(s,v)  before relaxation 
+       D(s,v) = (D(s,u))d[u] + w(u,v)
+     ==> relaxation -> d[v] = d[u] + w(u,v)=d[v]
+  -------------------------------
+   Correctness 2
+   when Dijkstra terminates d[v] = D(s,v) for all v in V
+   Proof:
+       d[v] doesn't change when v is added to S
+       =>d[v] = D(s,v) when v is added to S
+       Suppose for contradication that u is the first vertice (about to be)
+       added to S,which d[u]!=D(s,u) ==> d[u] > D(s,u)
+       Let p be a shortest path from s to u=>w(p) = D(s,u)
+       first edge (x,y) where p exists S [ x in S and y is out] 
+       d[x] = D(s,x) then add x to S,relax (x,y) ->D(s,y) = d[y] <=D(s,u)
+       d[u] <= d[y] <= D(s,u)
+   running time:
+      Time = |V| + |E|
+   Unweighted graphs
+   w(u,v) = 1;
+   BFS use FIFO queue 
+      
+       
+     
+  
+     
+     
+     
+  
