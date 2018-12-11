@@ -1,0 +1,64 @@
+Bellman - Ford algorithm
+reports that negative weight cycle
+D(s,v)
+d[s]<-0
+for each v in V-{s}
+  do d[v]<-infinity
+for i <-1 to |V|-1:
+  do for each edge (u,v) in E
+    do if d[v] > d[u] + weight(u,v)
+       then d[v] = d[u] + weight(u,v)
+for each edge (u,v) in E 
+  do if d[v] > d[u] + w(u,v)
+    then report that a negative-weight cycle
+running time O(VE)
+Correctness:
+  if G = (V,E) has no negative cycles,then terminates with 
+  d[v]=D(s,v) for all v in V
+  By monotonicity & Correctness 1 (d[v] >= D(s,v)),need to prove 
+  d[v] = D(s,v) at some time
+  Let p = v1->v1->...->vk be a shortest path from s to v with 
+  minimum number of edges => p is a simple path
+  D(s,vi) = D(s,vi-1) + w(vi-1,vi)
+  d[v0] = 0(init) D(s,v0) = 0;
+  Assume by induction that d[vi] = D(s,vi) after j round (j<i)
+  after i-1 rounds d[vi-1] = D(s,vi-1)
+  during round i relax (vi-1,vi) 
+  Correctness lemma ==> d[vi] = D(s,vi)
+  After k rounds,d[v] = D(s,v) k = |V|-1
+  
+  Corollary if Bellman-Ford fails to converge after |V|-1 rounds
+  must be a negative-weight cycle
+  
+  Linear programming
+   given m*n matrix A, m-vector bi n-vector ci ,find n-vector x that maximizes c(T)x subject to Ax<=b
+   Difference constraints  
+      linear feasibility problem where each row of matrix has 1,-1,(rest) 0
+   Constraint graph
+    xi - xj <= wj ==> xi--wj--wj
+    |V| = n ,|E| = m
+    xj <= xi + wij
+    d[xj] <= d[xi] + wij
+   Theorem if constraint graph has neg-weight cycle then 
+   difference constrainta are unsatisfiable
+   Proof : 
+   Let 
+   
+   Therorm : if no neg-weight cycle in constrainst graph G
+   then difference constraints are satisfiable
+   Proof : Add to G a new vertex s with a weight-o edge from s to all v in V
+   modified graph has no neg-weight cycle & has path from s
+   =>has shortest path from s 
+   Assign xi = D(s,vi)
+   xj-xi <=wij <=> D(s,vj) - D(s,vi) <= wij
+                   D(s,vj) <= D(s,vi) + wij
+   
+   Bellman-Ford solve a system of m difference on  
+   n variable in O(mn) time
+  
+  VLSI-Layout
+   Problem palce IC feature
+   
+  
+  
+
