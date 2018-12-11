@@ -38,7 +38,7 @@ next,
   & any sequence of relaxation
   Proof: 
      Initiality:d[s] = 0 & d[v] = 0   d[s]>= D(s,s) = 0 & D(s,v)<=infinity
-     Suppose for contradication that invariant is violated
+     Suppose for contradiction that invariant is violated
      Consider first violation d[v] < D(s,v) caused by relaxation
        caused by relaxation d[v] <- d[u] + w(u,v)< D(s,v)
      d[v] = d[u] + w(u,v) >= D(s,u) + w(u,v) >= D(s,v) + D(v,u) >= D(s,v)
