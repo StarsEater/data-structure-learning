@@ -1,0 +1,46 @@
+All-pairs shortest paths 
+    - unweighted |V|*BEF O(VE)
+    -nonneg edge weights |V|*Dijkstra -O(VE+V^2logV)
+    -general |V|* Bellman-Ford -O(V^2E)
+Problem:
+ Input: digraph G=(V,E)
+    V in {1,2,3.....n}
+    edge-weight function w:E->R
+  Output: n*n matrix D(i,j)
+  |V|*Bellman-Ford =>O(V^2 E)
+ G dense (E = theta(V^2)) =>O(V^4)
+  
+ Dynamic program
+  -let A be weighted adjacent matrix :A(aij),aij=w(i,j)
+  define dij(m) = weight of shortest path from i to j using <=m edge
+  =>dij(m-1)=dij(m) = D(i,j) if no neg-weight cycle
+  dij(0)=0 / infinity
+  dij(m) = min(k){dik(m-1)+akj}
+  
+ Alg:
+    for m<-1 to n-1
+      do for i<-1 to n
+       do for j<-1 to n
+         do for k<-1 to n
+           if dij > dik + dkj
+            then dij <-dik + dkj 
+ Matrix multiplication
+   A,B,C n*m
+   C = AB
+   cij = sum(k){aik*bkj}
+   sum->min *->+
+   cij = min(k){aik + bik}
+   D(m) = D(m-1) = D(m1) o A 
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
