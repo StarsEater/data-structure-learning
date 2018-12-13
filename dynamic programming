@@ -1,0 +1,37 @@
+Longest common subseq
+cij = |LCS(X[1,i],Y[1,j])|
+theorem 
+  c[i,j] = X[i]==Y[j]?c[i,j]+1 : max(c[i,j-1],c[i-1,j])
+Proof: 
+  Case X[i] = Y[j]
+  z[1..k] = LCS(X[1..i],Y[1...j]) where c[i,j]=k
+  Then,z[k]=X[i](Y[j]),or else z could be exended by tacking on X[i]
+  z[1..k-1] is LCS of X[1..i-1],Y[1..j-1]
+  Sup w is a longer CS, then |w|>k-1 , cut&paste w||z[k] is bigger than k
+  c[i-1,j-1] = k-1 => c[i,j] = c[i-1,j-1] + 1
+Dynamic-programming hallmark#1  
+Optimal substructure: An opt soltion to a problem(instance) contains
+opt solution to subproblems
+--------------------------
+if z=LCS(x,y),then prefix must be a LCS of subseq
+LCS(X,Y,i,j)
+  if X[i]==Y[j]
+    then c[i,j] = LCS(X,Y,i-1,j-1)+1
+    else c[i,j] = max(LCS(X,Y,i-1,j),LCS(X,Y,i,j-1))
+  return c[i,j]
+
+Dynamic-programming hallmark#2
+Overlapping subproblems: A recurisive solution constains a "small"
+number of distinct subproblemd repeated many times
+---------------------------
+LCS subproblems space contains m*n subproblems
+memoization alg 
+LCS(X,Y,i,j)
+  # if c[i,j]=nil
+        then if X[i]==Y[j]
+        then c[i,j] = LCS(X,Y,i-1,j-1)+1
+        else c[i,j] = max(LCS(X,Y,i-1,j),LCS(X,Y,i,j-1))
+    return c[i,j]
+running time/space: O(mn)
+
+Idea compute table bottom up
