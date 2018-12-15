@@ -1,4 +1,45 @@
 Graphs
   Digraph  G = (V,E) 
     -set V vertices
-    -set E 
+    -set E in V*V
+    |E| = O(V^2) connected=>|E|>|V|-1
+  Graph reprentation
+  Handshaking Lemma (undirected graph)
+  sum(degree(v)) = 2|E|
+  use theta(V+E)
+  
+  Minimum spanning tree
+  Input:Connecte undirected graph 
+   G =(V,E) with weight function w:E->R
+   for simplicity,assume all edge weight are distinct
+  Output:A spanning tree connected all vertices of minimum weight
+  w(T) = sum(w((u,v)))
+  
+  optimal substructure
+  remove (u,v) in T ,then T is parti into two trees
+  Theorem T1  is MST for G1=(V1,E1),subgraph of G induce
+  by vertices in T1
+   v1 = vertices in T1
+   E1 = {(x,y)} in E,x,y in V}
+  Proof:
+     cut&paste
+     w(T) = w(u,v) + w(T1) + w(T2)
+  -----------------------------------   
+  hallmark for greedy algorithm
+  Greedy-choice property:a locally optimal choice is globally optimal 
+  --------------------------------- 
+  Theorem Let T be MST of G=(V,E),A in V ,suppose (u,v) in E
+  is least-weight edge connecting A to V-A,then (u,v) in T
+  
+  Prim's algorithm
+  Idea: maintain V-A as  a priority queue Q .key EACH VERTEX in Q with 
+  weight of least-weight edge connectiong it to a vertex in A
+  Q <-V
+  key[v] <- infinity v in V
+  key[s]<-0
+   while Q!=空
+      do u<- Exract-Min(Q)
+        for each u in Adj[u]
+          do if v in Q and w(v) in key[v]
+            then key[v]<-w(u,v)
+              pi[v]<-u
